@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Container } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { GameState } from "./Type";
 import Asset from "./Asset";
 import GameMenu from "./screens/GameMenu";
@@ -8,7 +8,9 @@ import CatchGame from "./screens/CatchGame";
 import Leaderboard from "./screens/Leaderboard";
 
 const App = () => {
-  const [gameState, setGameState] = useState<GameState>(GameState.GAME_MENU);
+  const [gameState, setGameState] = useState<GameState>(
+    GameState.GAME_IN_PROGRESS
+  );
 
   const renderGameScreen = useCallback(() => {
     switch (gameState) {
@@ -17,15 +19,14 @@ const App = () => {
       case GameState.GAME_END:
         return <GameEnd />;
       case GameState.GAME_IN_PROGRESS:
-        return <CatchGame />;
+        return <CatchGame gameState={gameState} setGameState={setGameState} />;
       case GameState.LEADERBOARD:
         return <Leaderboard />;
     }
   }, [gameState]);
 
   return (
-    <Container
-      maxW={"2560px"}
+    <Box
       bgImage={Asset.bg2}
       backgroundRepeat={"no-repeat"}
       backgroundSize={"cover"}
@@ -33,7 +34,7 @@ const App = () => {
       h={"100vh"}
     >
       {renderGameScreen()}
-    </Container>
+    </Box>
   );
 };
 

@@ -9,3 +9,10 @@ export interface ScreenProps {
   gameState: GameState;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
 }
+
+export interface Entity {
+  x: number;
+  y: number;
+  point: number;
+  asset: string;
+}
