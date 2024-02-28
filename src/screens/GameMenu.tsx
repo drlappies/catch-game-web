@@ -1,9 +1,10 @@
+import { useContext } from "react";
 import { Container, Button, Card, CardBody, Center } from "@chakra-ui/react";
-import { GameState, ScreenProps } from "../Type";
+import { GameContext, GameState } from "../contexts/GameContext";
 
-interface Props extends ScreenProps {}
+const GameMenu = () => {
+  const { setGameState } = useContext(GameContext);
 
-const GameMenu = ({ setGameState }: Props) => {
   return (
     <Container maxW={"2560px"} w={"full"} h={"full"}>
       <Center w={"full"} h={"full"}>

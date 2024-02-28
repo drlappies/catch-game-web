@@ -1,25 +1,23 @@
-import { useState, useCallback } from "react";
+import { useContext, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
-import { GameState } from "./Type";
 import Asset from "./Asset";
 import GameMenu from "./screens/GameMenu";
 import GameEnd from "./screens/GameEnd";
 import CatchGame from "./screens/CatchGame";
 import Leaderboard from "./screens/Leaderboard";
+import { GameContext, GameState } from "./contexts/GameContext";
 
 const App = () => {
-  const [gameState, setGameState] = useState<GameState>(
-    GameState.GAME_IN_PROGRESS
-  );
+  const { gameState } = useContext(GameContext);
 
   const renderGameScreen = useCallback(() => {
     switch (gameState) {
       case GameState.GAME_MENU:
-        return <GameMenu gameState={gameState} setGameState={setGameState} />;
+        return <GameMenu />;
       case GameState.GAME_END:
         return <GameEnd />;
       case GameState.GAME_IN_PROGRESS:
-        return <CatchGame gameState={gameState} setGameState={setGameState} />;
+        return <CatchGame />;
       case GameState.LEADERBOARD:
         return <Leaderboard />;
     }

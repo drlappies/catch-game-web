@@ -1,20 +1,15 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  MouseEventHandler,
-} from "react";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Asset from "../Asset";
-import { Entity, ScreenProps } from "../Type";
-
-interface Props extends ScreenProps {}
+import { Entity } from "../Type";
+import { GameContext, GameState } from "../contexts/GameContext";
 
 const ENTITY_WIDTH = 80;
 const ENTITY_HEIGHT = 80;
 
-const CatchGame = ({ setGameState }: Props) => {
+const CatchGame = () => {
+  const { setGameState, point, setPoint } = useContext(GameContext);
+  const [timer, setTimer] = useState(60);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const entities = useRef<Entity[]>([]);
   const catcher = useRef<Entity>({
@@ -23,7 +18,6 @@ const CatchGame = ({ setGameState }: Props) => {
     point: 0,
     asset: Asset.boat,
   });
-  const [points, setPoints] = useState(0);
 
   const getRandomEntityAsset = useCallback((isBad: boolean): string => {
     const goodAssets = [Asset.p1, Asset.p2, Asset.p3, Asset.p4];
@@ -80,7 +74,7 @@ const CatchGame = ({ setGameState }: Props) => {
         entity.x + 100 > catcher.current.x &&
         entity.y >= window.innerHeight - 100
       ) {
-        setPoints((prevState) => prevState + entity.point);
+        setPoint((prevState) => prevState + entity.point);
       }
     }
 
@@ -91,7 +85,7 @@ const CatchGame = ({ setGameState }: Props) => {
         entity.y >= window.innerHeight - 100
       );
     });
-  }, []);
+  }, [setPoint]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
@@ -108,12 +102,23 @@ const CatchGame = ({ setGameState }: Props) => {
   }, [detectCatch, drawEntities]);
 
   useEffect(() => {
-    const spawnEntityInterval = setInterval(() => spawnEntity(), 500);
+    const spawnEntityInterval = setInterval(() => spawnEntity(), 1000);
+    const timerInterval = setInterval(
+      () => setTimer((prevState) => prevState - 1),
+      1000
+    );
 
     return () => {
       clearInterval(spawnEntityInterval);
+      clearInterval(timerInterval);
     };
   }, [spawnEntity]);
+
+  useEffect(() => {
+    if (timer <= 0) {
+      setGameState(GameState.GAME_END);
+    }
+  }, [setGameState, timer]);
 
   useEffect(() => {
     runGameLoop();
@@ -128,7 +133,7 @@ const CatchGame = ({ setGameState }: Props) => {
       w={"full"}
       h={"full"}
     >
-      <Text
+      <Box
         bgColor={"#fff"}
         position={"absolute"}
         top={"5px"}
@@ -137,8 +142,9 @@ const CatchGame = ({ setGameState }: Props) => {
         borderRadius={"5px"}
         fontWeight={"bold"}
       >
-        Points: {points}
-      </Text>
+        <Text>Time left: {timer}</Text>
+        <Text>Points: {point}</Text>
+      </Box>
       <canvas
         onMouseMove={handleMouseMove}
         ref={canvasRef}
