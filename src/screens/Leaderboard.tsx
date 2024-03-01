@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
 import {
   Container,
   TableContainer,
@@ -9,18 +9,22 @@ import {
   Tbody,
   Td,
   Text,
+  Button,
+  Center,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { Leaderboard as LeaderboardData, Record } from "../Type";
+import { GameContext, GameState } from "../contexts/GameContext";
 
 const Leaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const { setGameState } = useContext(GameContext);
+  const [leaderboard, setLeaderboard] = useState<Record[]>([]);
 
-  const getLeaderBoard = useCallback(() => {
-    setLeaderboard([
-      { id: 0, point: 100, name: "Hello" },
-      { id: 1, point: 100, name: "Hello" },
-      { id: 2, point: 100, name: "Hello" },
-      { id: 3, point: 100, name: "Hello" },
-    ]);
+  const getLeaderBoard = useCallback(async () => {
+    const { data } = await axios.get<LeaderboardData>(
+      "http://localhost:3000/leaderboard"
+    );
+    setLeaderboard(data.data);
   }, []);
 
   useEffect(() => {
@@ -32,7 +36,15 @@ const Leaderboard = () => {
       <Text color={"#fff"} fontWeight={"semibold"} fontSize={"lg"} my={"12px"}>
         Leaderboard
       </Text>
-      <TableContainer w={"300px"}>
+      <Button
+        my={"4px"}
+        onClick={() => setGameState(GameState.GAME_MENU)}
+        colorScheme={"blue"}
+      >
+        Back to Menu
+      </Button>
+
+      <TableContainer w={"full"}>
         <Table variant={"simple"} bgColor={"#fff"}>
           <Thead>
             <Tr>
@@ -42,8 +54,8 @@ const Leaderboard = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {leaderboard.map(({ id, point, name }, i) => (
-              <Tr key={id}>
+            {leaderboard.map(({ point, name }, i) => (
+              <Tr key={i}>
                 <Td>{i + 1}</Td>
                 <Td>{point}</Td>
                 <Td>{name}</Td>

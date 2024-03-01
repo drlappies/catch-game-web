@@ -1,5 +1,5 @@
 import { useContext, useCallback } from "react";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import {
   Center,
@@ -15,23 +15,9 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { GameContext, GameState } from "../contexts/GameContext";
-import { Record } from "../Type";
 
 const GameEnd = () => {
   const { point, setGameState } = useContext(GameContext);
-
-  const submitRecord = useCallback(
-    async ({ name, point }: Record): Promise<void> => {
-      await axios.post<void>("http://localhost:3000/leaderboard/createRecord", {
-        name,
-        point,
-      });
-
-      setGameState(GameState.LEADERBOARD);
-    },
-    [setGameState]
-  );
-
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -39,7 +25,23 @@ const GameEnd = () => {
     validationSchema: Yup.object().shape({
       name: Yup.string().min(5).max(100).required("Name is required"),
     }),
-    onSubmit: ({ name }) => submitRecord({ name, point }),
+    onSubmit: async ({ name }) => {
+      try {
+        await axios.post<void>(
+          "http://localhost:3000/leaderboard/createRecord",
+          {
+            name,
+            point,
+          }
+        );
+
+        setGameState(GameState.LEADERBOARD);
+      } catch (e) {
+        if (isAxiosError(e)) {
+          formik.setFieldError("name", e.response?.data.message);
+        }
+      }
+    },
   });
 
   return (

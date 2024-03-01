@@ -6,7 +6,7 @@ import { GameContext, GameState } from "../contexts/GameContext";
 
 const ENTITY_WIDTH = 80;
 const ENTITY_HEIGHT = 80;
-const GAME_TIME = 5; // sec
+const GAME_TIME = 60; // sec
 
 const CatchGame = () => {
   const { setGameState, point, setPoint } = useContext(GameContext);
