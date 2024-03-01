@@ -6,10 +6,11 @@ import { GameContext, GameState } from "../contexts/GameContext";
 
 const ENTITY_WIDTH = 80;
 const ENTITY_HEIGHT = 80;
+const GAME_TIME = 5; // sec
 
 const CatchGame = () => {
   const { setGameState, point, setPoint } = useContext(GameContext);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(GAME_TIME);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const entities = useRef<Entity[]>([]);
   const catcher = useRef<Entity>({

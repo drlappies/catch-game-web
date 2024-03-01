@@ -4,3 +4,12 @@ export interface Entity {
   point: number;
   asset: string;
 }
+
+export interface Record {
+  name: string;
+  point: number;
+}
+
+export interface Leaderboard {
+  data: Record[];
+}
