@@ -17,6 +17,7 @@ const CatchGame = () => {
   const { setGameState, setScore } = useContext(GameContext);
   const remainingTime = useRef(MAX_GAME_TIME);
   const score = useRef(0);
+  const boxRef = useRef<HTMLDivElement>(null);
   const timerCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const entities = useRef<Map<string, Entity>>(new Map());
@@ -145,8 +146,21 @@ const CatchGame = () => {
     []
   );
 
+  const scaleCanvas = useCallback(() => {
+    if (!canvasRef.current || !boxRef.current) return;
+    const canvas = canvasRef.current;
+    const box = boxRef.current;
+    const context = canvasRef.current.getContext("2d");
+    if (!context) return;
+
+    canvas.width = Math.floor(box.clientWidth * devicePixelRatio);
+    canvas.height = Math.floor(box.clientHeight * devicePixelRatio);
+    context.scale(devicePixelRatio, devicePixelRatio);
+  }, []);
+
   useGameLoop({
     jobs: [
+      { run: scaleCanvas },
       { run: spawnEntity, interval: 1000 },
       { run: updateEntityPosition },
       { run: updateGameTimer, interval: 1000 },
@@ -157,6 +171,7 @@ const CatchGame = () => {
 
   return (
     <Box
+      ref={boxRef}
       bgImage={Asset.bg1}
       bgRepeat={"no-repeat"}
       bgSize={"cover"}
@@ -171,9 +186,8 @@ const CatchGame = () => {
         height={500}
       />
       <canvas
+        style={{ width: "100%", height: "100%" }}
         ref={canvasRef}
-        width={window.innerWidth}
-        height={window.innerHeight}
         onMouseMove={handleMouseMove}
       />
     </Box>
