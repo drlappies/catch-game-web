@@ -49,13 +49,11 @@ const CatchGame = () => {
     entities.current.push(entity);
   }, [createEntity]);
 
-  const updateEntityPosition = useCallback(() => {
-    if (!canvasRef.current || !catcher.current) return;
+  const renderEntities = useCallback(() => {
+    if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     if (!context) return;
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
 
     entities.current.forEach((entity) => {
       entity.y += 1;
@@ -69,6 +67,13 @@ const CatchGame = () => {
         ENTITY_IMAGE_HEIGHT
       );
     });
+  }, []);
+
+  const renderBoat = useCallback(() => {
+    if (!canvasRef.current || !catcher.current) return;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
     const boatImage = new Image();
     boatImage.src = Asset.boat;
@@ -80,6 +85,18 @@ const CatchGame = () => {
       BOAT_IMAGE_HEIGHT
     );
   }, []);
+
+  const updateEntityPosition = useCallback(() => {
+    if (!canvasRef.current || !catcher.current) return;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    renderEntities();
+    renderBoat();
+  }, [renderBoat, renderEntities]);
 
   const updateGameTimer = useCallback(() => {
     if (!timerCanvasRef.current) return;
