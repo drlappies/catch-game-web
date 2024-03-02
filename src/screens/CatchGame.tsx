@@ -60,11 +60,10 @@ const CatchGame = () => {
     if (!context) return;
 
     entities.current.forEach((entity) => {
-      entity.y += 1;
       context.drawImage(
         entity.image,
         entity.x,
-        entity.y,
+        (entity.y += 1),
         ENTITY_IMAGE_WIDTH,
         ENTITY_IMAGE_HEIGHT
       );

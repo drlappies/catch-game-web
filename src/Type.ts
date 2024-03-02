@@ -8,7 +8,7 @@ export interface Entity {
 
 export interface Record {
   name: string;
-  point: number;
+  score: number;
 }
 
 export interface Leaderboard {

@@ -54,10 +54,10 @@ const Leaderboard = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {leaderboard.map(({ point, name }, i) => (
+            {leaderboard.map(({ score, name }, i) => (
               <Tr key={i}>
                 <Td>{i + 1}</Td>
-                <Td>{point}</Td>
+                <Td>{score}</Td>
                 <Td>{name}</Td>
               </Tr>
             ))}
