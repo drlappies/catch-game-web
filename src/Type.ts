@@ -2,7 +2,7 @@ export interface Entity {
   x: number;
   y: number;
   point: number;
-  asset: string;
+  image: HTMLImageElement;
 }
 
 export interface Record {

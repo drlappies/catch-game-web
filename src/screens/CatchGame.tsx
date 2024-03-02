@@ -4,6 +4,7 @@ import Asset from "../Asset";
 import { Entity } from "../Type";
 import { GameContext, GameState } from "../contexts/GameContext";
 import useGameLoop from "../hooks/useGameLoop";
+import Images from "../Image";
 
 const MAX_GAME_TIME = 60;
 const ENTITY_IMAGE_WIDTH = 80;
@@ -22,27 +23,27 @@ const CatchGame = () => {
     y: window.innerHeight + BOAT_IMAGE_HEIGHT,
     x: window.innerWidth / 2,
     point: 0,
-    asset: Asset.boat,
+    image: Images.boat,
   });
 
-  const getRandomEntityAsset = useCallback((isBad: boolean) => {
-    const goodAssets = [Asset.p1, Asset.p2, Asset.p3, Asset.p4];
-    const badAssets = [Asset.e1, Asset.e2];
-    const assets = isBad ? badAssets : goodAssets;
-    return assets[Math.floor(Math.random() * assets.length)];
+  const getRandomEntityImage = useCallback((isBad: boolean) => {
+    const goodGuys = [Images.p1, Images.p2, Images.p3, Images.p4];
+    const badGuys = [Images.e1, Images.e2];
+    const images = isBad ? badGuys : goodGuys;
+    return images[Math.floor(Math.random() * images.length)];
   }, []);
 
   const createEntity = useCallback((): Entity => {
     const isBad = Math.random() < 0.5;
-    const asset = getRandomEntityAsset(isBad);
+    const image = getRandomEntityImage(isBad);
 
     return {
       x: Math.random() * window.innerWidth,
       y: 0,
-      asset,
+      image,
       point: isBad ? -100 : 50,
     };
-  }, [getRandomEntityAsset]);
+  }, [getRandomEntityImage]);
 
   const spawnEntity = useCallback(() => {
     const entity = createEntity();
@@ -57,10 +58,8 @@ const CatchGame = () => {
 
     entities.current.forEach((entity) => {
       entity.y += 1;
-      const image = new Image();
-      image.src = entity.asset;
       context.drawImage(
-        image,
+        entity.image,
         entity.x,
         entity.y,
         ENTITY_IMAGE_WIDTH,
@@ -75,10 +74,8 @@ const CatchGame = () => {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    const boatImage = new Image();
-    boatImage.src = Asset.boat;
     context.drawImage(
-      boatImage,
+      Images.boat,
       catcher.current.x,
       window.innerHeight - BOAT_IMAGE_HEIGHT,
       BOAT_IMAGE_WIDTH,

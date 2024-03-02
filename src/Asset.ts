@@ -1,4 +1,4 @@
-const Asset = {
+const Assets = {
   bg1: process.env.PUBLIC_URL + "/assets/bg1.png",
   bg2: process.env.PUBLIC_URL + "/assets/bg2.png",
   boat: process.env.PUBLIC_URL + "/assets/boat.png",
@@ -10,4 +10,4 @@ const Asset = {
   p4: process.env.PUBLIC_URL + "/assets/p4.png",
 };
 
-export default Asset;
+export default Assets;
