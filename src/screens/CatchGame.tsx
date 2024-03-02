@@ -5,6 +5,7 @@ import { Entity } from "../Type";
 import { GameContext, GameState } from "../contexts/GameContext";
 import useGameLoop from "../hooks/useGameLoop";
 import Images from "../Image";
+import { v4 as uuid } from "uuid";
 
 const MAX_GAME_TIME = 60;
 const ENTITY_IMAGE_WIDTH = 80;
@@ -18,11 +19,12 @@ const CatchGame = () => {
   const score = useRef(0);
   const timerCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const entities = useRef<Entity[]>([]);
+  const entities = useRef<Map<string, Entity>>(new Map());
   const catcher = useRef<Entity>({
+    id: uuid(),
+    score: 0,
     y: window.innerHeight + BOAT_IMAGE_HEIGHT,
     x: window.innerWidth / 2,
-    score: 0,
     image: Images.boat,
   });
 
@@ -38,6 +40,7 @@ const CatchGame = () => {
     const image = getRandomEntityImage(isBad);
 
     return {
+      id: uuid(),
       x: Math.random() * window.innerWidth,
       y: 0,
       image,
@@ -47,7 +50,7 @@ const CatchGame = () => {
 
   const spawnEntity = useCallback(() => {
     const entity = createEntity();
-    entities.current.push(entity);
+    entities.current.set(entity.id, entity);
   }, [createEntity]);
 
   const renderEntities = useCallback(() => {
@@ -120,17 +123,12 @@ const CatchGame = () => {
       );
     };
 
-    for (let i = 0; i < entities.current.length; i++) {
-      const entity = entities.current[i];
-
+    entities.current.forEach((entity) => {
       if (isCollision(entity)) {
         score.current += entity.score;
+        entities.current.delete(entity.id);
       }
-    }
-
-    entities.current = entities.current.filter(
-      (entity) => !isCollision(entity)
-    );
+    });
   }, []);
 
   const checkHasGameEnded = useCallback(() => {
