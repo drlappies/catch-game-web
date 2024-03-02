@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { GameContext, GameState } from "../contexts/GameContext";
+import api from "../Api";
 
 const GameEnd = () => {
   const { score, setGameState } = useContext(GameContext);
@@ -25,14 +26,7 @@ const GameEnd = () => {
     }),
     onSubmit: async ({ name }) => {
       try {
-        await axios.post<void>(
-          "http://localhost:3000/leaderboard/createRecord",
-          {
-            name,
-            score,
-          }
-        );
-
+        await api.createRecord({ name, score });
         setGameState(GameState.LEADERBOARD);
       } catch (e) {
         if (isAxiosError(e)) {

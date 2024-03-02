@@ -10,21 +10,18 @@ import {
   Td,
   Text,
   Button,
-  Center,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { Leaderboard as LeaderboardData, Record } from "../Type";
+import { Record } from "../Type";
 import { GameContext, GameState } from "../contexts/GameContext";
+import api from "../Api";
 
 const Leaderboard = () => {
   const { setGameState } = useContext(GameContext);
   const [leaderboard, setLeaderboard] = useState<Record[]>([]);
 
   const getLeaderBoard = useCallback(async () => {
-    const { data } = await axios.get<LeaderboardData>(
-      "http://localhost:3000/leaderboard"
-    );
-    setLeaderboard(data.data);
+    const leaderboard = await api.getLeaderboard();
+    setLeaderboard(leaderboard.data);
   }, []);
 
   useEffect(() => {
