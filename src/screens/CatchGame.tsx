@@ -5,7 +5,7 @@ import { Entity } from "../Type";
 import { GameContext, GameState } from "../contexts/GameContext";
 import useGameLoop from "../hooks/useGameLoop";
 
-const MAX_GAME_TIME = 9999;
+const MAX_GAME_TIME = 60;
 const ENTITY_IMAGE_WIDTH = 80;
 const ENTITY_IMAGE_HEIGHT = 80;
 const BOAT_IMAGE_WIDTH = 115.2;
@@ -99,9 +99,10 @@ const CatchGame = () => {
   const checkEntityCatch = useCallback(() => {
     const isCollision = (entity: Entity) => {
       return (
-        entity.x > catcher.current.x && // the starting X position of the entity is greater than the start X posiiton of the catcher
-        entity.x + ENTITY_IMAGE_WIDTH < catcher.current.x + BOAT_IMAGE_WIDTH && // the ending X position of the entity is less than the ending X position of the catcher
-        entity.y >= window.innerHeight - BOAT_IMAGE_HEIGHT // the starting Y position is more than the starting Y position minus the boat image height of the catcher
+        entity.x > catcher.current.x &&
+        entity.x + ENTITY_IMAGE_WIDTH < catcher.current.x + BOAT_IMAGE_WIDTH &&
+        entity.y > window.innerHeight - BOAT_IMAGE_HEIGHT + 50 &&
+        entity.y < window.innerHeight
       );
     };
 

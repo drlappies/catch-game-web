@@ -10,6 +10,7 @@ export interface UseGameLoop {
 }
 
 const useGameLoop = ({ jobs }: UseGameLoop) => {
+  const animationFrame = useRef(0);
   const deltaTime = useRef(performance.now());
   const timers = useRef<Map<Function, number>>(
     new Map(jobs.map(({ run }) => [run, 1]))
@@ -39,11 +40,15 @@ const useGameLoop = ({ jobs }: UseGameLoop) => {
 
     deltaTime.current = performance.now();
 
-    requestAnimationFrame(runGameLoop);
+    animationFrame.current = requestAnimationFrame(runGameLoop);
   }, [jobs]);
 
   useEffect(() => {
     runGameLoop();
+
+    return () => {
+      cancelAnimationFrame(animationFrame.current);
+    };
   }, [runGameLoop]);
 };
 
