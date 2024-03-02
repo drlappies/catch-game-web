@@ -1,4 +1,4 @@
-import { useContext, useCallback } from "react";
+import { useContext } from "react";
 import axios, { isAxiosError } from "axios";
 import { useFormik } from "formik";
 import {
@@ -9,15 +9,13 @@ import {
   Input,
   Button,
   FormControl,
-  FormHelperText,
   FormErrorMessage,
-  Box,
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { GameContext, GameState } from "../contexts/GameContext";
 
 const GameEnd = () => {
-  const { point, setGameState } = useContext(GameContext);
+  const { score, setGameState } = useContext(GameContext);
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -31,7 +29,7 @@ const GameEnd = () => {
           "http://localhost:3000/leaderboard/createRecord",
           {
             name,
-            point,
+            score,
           }
         );
 
@@ -49,7 +47,7 @@ const GameEnd = () => {
       <Card w={"300px"}>
         <CardBody textAlign={"center"}>
           <Text fontWeight={"bold"}>Game Over</Text>
-          <Text mb={"4px"}>You earned {point} points</Text>
+          <Text mb={"4px"}>You earned {score} points</Text>
           <FormControl isInvalid={Boolean(formik.errors.name)}>
             <Input
               placeholder={"Name"}

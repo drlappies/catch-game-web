@@ -1,7 +1,7 @@
 export interface Entity {
   x: number;
   y: number;
-  point: number;
+  score: number;
   image: HTMLImageElement;
 }
 

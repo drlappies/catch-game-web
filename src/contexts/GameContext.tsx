@@ -3,8 +3,8 @@ import { createContext, useEffect, useState } from "react";
 interface Context {
   gameState: GameState;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-  point: number;
-  setPoint: React.Dispatch<React.SetStateAction<number>>;
+  score: number;
+  setScore: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface Props {
@@ -21,27 +21,27 @@ export enum GameState {
 export const GameContext = createContext<Context>({
   gameState: GameState.GAME_MENU,
   setGameState: () => {},
-  point: 0,
-  setPoint: () => {},
+  score: 0,
+  setScore: () => {},
 });
 
 const GameContextProvider = ({ children }: Props) => {
   const [gameState, setGameState] = useState<GameState>(GameState.GAME_MENU);
-  const [point, setPoint] = useState(0);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     if (gameState === GameState.GAME_IN_PROGRESS) {
-      setPoint(0);
+      setScore(0);
     }
   }, [gameState]);
 
   return (
     <GameContext.Provider
       value={{
-        point,
+        score,
         gameState,
         setGameState,
-        setPoint,
+        setScore,
       }}
     >
       {children}

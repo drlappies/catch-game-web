@@ -13,7 +13,7 @@ const BOAT_IMAGE_WIDTH = 115.2;
 const BOAT_IMAGE_HEIGHT = 141.2;
 
 const CatchGame = () => {
-  const { setGameState, setPoint } = useContext(GameContext);
+  const { setGameState, setScore } = useContext(GameContext);
   const remainingTime = useRef(MAX_GAME_TIME);
   const score = useRef(0);
   const timerCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,7 +22,7 @@ const CatchGame = () => {
   const catcher = useRef<Entity>({
     y: window.innerHeight + BOAT_IMAGE_HEIGHT,
     x: window.innerWidth / 2,
-    point: 0,
+    score: 0,
     image: Images.boat,
   });
 
@@ -41,7 +41,7 @@ const CatchGame = () => {
       x: Math.random() * window.innerWidth,
       y: 0,
       image,
-      point: isBad ? -100 : 50,
+      score: isBad ? -100 : 50,
     };
   }, [getRandomEntityImage]);
 
@@ -124,7 +124,7 @@ const CatchGame = () => {
       const entity = entities.current[i];
 
       if (isCollision(entity)) {
-        score.current += entity.point;
+        score.current += entity.score;
       }
     }
 
@@ -135,10 +135,10 @@ const CatchGame = () => {
 
   const checkHasGameEnded = useCallback(() => {
     if (remainingTime.current <= 0) {
-      setPoint(score.current);
+      setScore(score.current);
       setGameState(GameState.GAME_END);
     }
-  }, [setGameState, setPoint]);
+  }, [setGameState, setScore]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
