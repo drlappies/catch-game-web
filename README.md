@@ -1,46 +1,16 @@
-# Getting Started with Create React App
+#### catch-game-web
+- The frontend/UI for the catch-game web applications
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### Getting started
+- Run `yarn start` to run the project on localhost:3000
+- .env.development/ .env.example contains the domain to the backend
 
-## Available Scripts
+#### Dependencies
+- For the UI components and logic, the project uses `Typescript`, `React`, and `Chakra UI`.
+- For the fetching, the project uses `Axios` to handle ajax requests.
+- There is also an UUID library to handle some of the game logic.
 
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Game
+- The game uses a infinite `run loop` to manage all the events and world update. I wrote a myself a game loop using React hooks [`useGameLoop`](./src/hooks/useGameLoop.ts) to run timed spawning of entities, detection of collision, and etc. But if we are going to make a more complicated game, we should use a game engine instead.
+- The game uses html5 canvas to render the the game UI. The state of the game such as entities' position and the game timer are stored in a React refObject.
+- The game would submit the final score to the backend after the game.
