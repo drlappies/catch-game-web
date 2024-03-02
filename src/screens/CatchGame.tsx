@@ -5,9 +5,11 @@ import { Entity } from "../Type";
 import { GameContext, GameState } from "../contexts/GameContext";
 import useGameLoop from "../hooks/useGameLoop";
 
-const ENTITY_WIDTH = 80;
-const ENTITY_HEIGHT = 80;
-const MAX_GAME_TIME = 60;
+const MAX_GAME_TIME = 9999;
+const ENTITY_IMAGE_WIDTH = 80;
+const ENTITY_IMAGE_HEIGHT = 80;
+const BOAT_IMAGE_WIDTH = 115.2;
+const BOAT_IMAGE_HEIGHT = 141.2;
 
 const CatchGame = () => {
   const { setGameState, setPoint } = useContext(GameContext);
@@ -17,8 +19,8 @@ const CatchGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const entities = useRef<Entity[]>([]);
   const catcher = useRef<Entity>({
-    y: window.innerHeight + 100,
-    x: 0,
+    y: window.innerHeight + BOAT_IMAGE_HEIGHT,
+    x: window.innerWidth / 2,
     point: 0,
     asset: Asset.boat,
   });
@@ -27,8 +29,7 @@ const CatchGame = () => {
     const goodAssets = [Asset.p1, Asset.p2, Asset.p3, Asset.p4];
     const badAssets = [Asset.e1, Asset.e2];
     const assets = isBad ? badAssets : goodAssets;
-    const randomAsset = assets[Math.floor(Math.random() * assets.length)];
-    return randomAsset;
+    return assets[Math.floor(Math.random() * assets.length)];
   }, []);
 
   const createEntity = useCallback((): Entity => {
@@ -60,17 +61,23 @@ const CatchGame = () => {
       entity.y += 1;
       const image = new Image();
       image.src = entity.asset;
-      context.drawImage(image, entity.x, entity.y, ENTITY_WIDTH, ENTITY_HEIGHT);
+      context.drawImage(
+        image,
+        entity.x,
+        entity.y,
+        ENTITY_IMAGE_WIDTH,
+        ENTITY_IMAGE_HEIGHT
+      );
     });
 
-    const image = new Image();
-    image.src = Asset.boat;
+    const boatImage = new Image();
+    boatImage.src = Asset.boat;
     context.drawImage(
-      image,
+      boatImage,
       catcher.current.x,
-      window.innerHeight - image.height / 5,
-      image.width / 5,
-      image.height / 5
+      window.innerHeight - BOAT_IMAGE_HEIGHT,
+      BOAT_IMAGE_WIDTH,
+      BOAT_IMAGE_HEIGHT
     );
   }, []);
 
@@ -90,25 +97,25 @@ const CatchGame = () => {
   }, []);
 
   const checkEntityCatch = useCallback(() => {
+    const isCollision = (entity: Entity) => {
+      return (
+        entity.x > catcher.current.x && // the starting X position of the entity is greater than the start X posiiton of the catcher
+        entity.x + ENTITY_IMAGE_WIDTH < catcher.current.x + BOAT_IMAGE_WIDTH && // the ending X position of the entity is less than the ending X position of the catcher
+        entity.y >= window.innerHeight - BOAT_IMAGE_HEIGHT // the starting Y position is more than the starting Y position minus the boat image height of the catcher
+      );
+    };
+
     for (let i = 0; i < entities.current.length; i++) {
       const entity = entities.current[i];
 
-      if (
-        entity.x < catcher.current.x + 100 &&
-        entity.x + 100 > catcher.current.x &&
-        entity.y >= window.innerHeight - 100
-      ) {
+      if (isCollision(entity)) {
         score.current += entity.point;
       }
     }
 
-    entities.current = entities.current.filter((entity) => {
-      return !(
-        entity.x < catcher.current.x + 100 &&
-        entity.x + 100 > catcher.current.x &&
-        entity.y >= window.innerHeight - 100
-      );
-    });
+    entities.current = entities.current.filter(
+      (entity) => !isCollision(entity)
+    );
   }, []);
 
   const checkHasGameEnded = useCallback(() => {
